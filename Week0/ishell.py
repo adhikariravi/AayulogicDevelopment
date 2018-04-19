@@ -1,17 +1,32 @@
 #
 ## Development of Interactive Shell for the User
 #
-
+from os import system as sys_cmd
 from config.CrudModule import User_CRUD
 
 class Interactive_Shell:
     def __init__(self):
         self.user_object = User_CRUD()
 
+    def prefetch_email(self):
+        ## probable err for no data
+        self.emails=[elem[0] for elem in self.user_object.read(*['email']).fetchall()]
+
+    def read_result_formatter_paginator(self,*args,**kwargs):
+        pass
+    
+    @staticmethod
+    def pause(msg):
+        print(msg)
+        input('Enter any key to continue . . .')
+
     def infinite_loop(self):
+        self.__class__.pause('test')
+        prompt='root@web# '
+        self.prefetch_email()
         while True:
             self.show_Menu()
-            user_input=input()
+            user_input=input(prompt)
             if(user_input=='1'):
                 uv = self.get_user_input()
                 self.user_object.insert(**uv)
@@ -20,53 +35,68 @@ class Interactive_Shell:
                 kwargs={}
                 print('Enter fields to be displayed\nPress Enter to show all columns')
                 while True:
-                    inp=input('>>> ')
+                    inp=input(prompt)
                     if not inp:
                         break
                     args.append(inp)
+                args=['*'] if len(args)==0 else args
                 print('Enter filter fields to be selected seperated by space \nEnter to Quit ')
                 while True:
-                    inp=input('>>> ')
+                    inp=input(prompt)
                     if not inp:
                         break
-                    for key,value in inp.split(' '):
-                        if key not in self.user_object.user_values:
-                            print('Invalid Key!')
-                            pass
-                        kwargs[key]=value
+                    field,value = inp.split(' ')
+                    if field in self.user_object.user_values:
+                        kwargs[field]=value
+                    print('args: ',args)
+                    print('kwargs: ',kwargs)
                 resultSet=self.user_object.read(*args,**kwargs)
                 for row in resultSet.fetchall():
-                    print(row)
+                    for ind,field in enumerate(row[1:]):
+                        print(self.user_object.user_values[ind],'\t\t',field)
+                self.__class__.pause('').__func__()
+
             elif(user_input=='3'):
-                pass
+                # Update User Info
+                email = input('Enter email of the target row to be changed: ')
+                res=self.user_object.read(*['*'],**{'email':email}).fetchone()
+                if(email not in self.emails):
+                    print('No Matching email')
+                    continue
+                else:
+                    print('Old Values\n')
+                    for index,fields in self.user_object.user_values:
+                        print(fields,' : ',res[index])
+                updating_values=self.get_user_input()
+                self.user_object.update(email,**updating_values)
+                self.__class__.pause('User Details updated')
+                self.prefetch_email()
+
             elif(user_input=='4'):
-                pass
+                #
+                ## Delete User Info
+                #
+                email=input('Enter the email address of the row to be deleted: ')
+                if email not in self.emails:
+                    print('Email Does not Exist ')
+                    continue
+                self.user_object.delete(email)
+                self.__class__.pause('Matching Records Deleted') #TODO: Add no. of Affected Rows
+                self.prefetch_email()
+
             elif(user_input=='quit'):
                 break
     
     def show_Menu(self):
-        print("""
-        Interactive Database Test
-        Options:
-        1. Insert INTO Database
-        2. Read FROM Database
-        3. Update User Info
-        4. Delete User Info
-        """)
+        sys_cmd('clear')
+        print("============================================================")
+        print("Interactive Database Test\nOptions:\n1. Insert INTO Database")
+        print("2. Read FROM Database\n3. Update User Info\n4. Delete User Info\n")
 
     def get_user_input(self):
         user_values={}
-        user_values['name']=input('Enter name  :')
-        user_values['phone']=input('Enter phone  :')
-        user_values['email']=input('Enter phone  :')
-        user_values['bio']=input('Enter bio  :')
-        user_values['dob']=input('Enter dob  :')
-        user_values['gender']=input('Enter gender  :')
-        user_values['address']=input('Enter address  :')
-        user_values['lat']=input('Enter lat  :')
-        user_values['long']=input('Enter long  :')
-        user_values['image']=input('Enter image  :')
-        user_values['hyperlink']=input('Enter hyperlink  :')
+        for usv in self.user_object.user_values:
+            user_values[usv]=input('Enter '+usv+'\t\t\t')
         return user_values
 
 def main():
