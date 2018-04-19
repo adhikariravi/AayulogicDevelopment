@@ -32,5 +32,5 @@ class JSONLoader:
     def load(self):
         self.insert_json_data()
 
-jsn = JSONLoader('/home/developer/Aayulogic/AAYULOGIC_BACKUP_MODULES/data1.json')
+jsn = JSONLoader('row200.json')
 jsn.insert_json_data()
