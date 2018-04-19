@@ -12,7 +12,7 @@ import logging
                  Unique Identifier Used: email
                  User_CRUD
                     |-__init__()
-                    |-create() # Creates Table
+                    |-create() # Creates User Table
                     |-get_kwargs(**kwargs) #create a dictionary containing '' for values not provided by User
                     |-insert(**kwargs) # Inserts rows into Database based on kwargs sent by user
                     |-read(**kwargs) # Returns all matching records matching criteria
