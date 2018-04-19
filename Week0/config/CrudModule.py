@@ -31,9 +31,13 @@ console_handler.setLevel(logging.ERROR)
 logger.addHandler(log_file_handler)
 logger.addHandler(console_handler)
 
+#
+## Convert the methods to accept and modify a dynamic model
+#
+
 class User_CRUD:
     def __init__(self):
-        self.conn_obj = sqlite3.connect('/home/developer/Aayulogic/AayulogicDevelopment/Week0/config/web.db')
+        self.conn_obj = sqlite3.connect('config/web.db')
         self.cursor_obj = self.conn_obj.cursor()
         self.user_values=['name', 'phone','email', 'bio',
                           'dob', 'gender', 'address', 'lat', 'long', 'image', 'hyperlink']
@@ -66,7 +70,7 @@ class User_CRUD:
         self.conn_obj.commit()
 
     def read(self,*selectvalues,**kwargs):
-        read_statement="SELECT "+', '.join(selectvalues)+' FROM User '
+        read_statement=' SELECT '+', '.join(selectvalues)+' FROM User '
         selectives=[]
         for field, value in kwargs.items():
             selectives.append(str(str(field)+' = "'+str(value)+'"'))
