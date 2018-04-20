@@ -39,7 +39,7 @@ class UserCrud:
     user_values=['name', 'phone','email', 'bio',
                           'dob', 'gender', 'address', 'lat', 'long', 'image', 'hyperlink']
     def __init__(self):
-        self.conn_obj = sqlite3.connect('web.db')
+        self.conn_obj = sqlite3.connect('config/web.db')
         self.cursor_obj = self.conn_obj.cursor()
 
     def create(self):
@@ -65,21 +65,20 @@ class UserCrud:
         insert_statement="""
         INSERT INTO User (name, phone,email, bio, dob, gender, address, lat, long, image, hyperlink) 
         VALUES(:name, :phone, :email, :bio, :dob, :gender, :address, :lat, :long, :image, :hyperlink)"""
-        resultset=self.cursor_obj.execute(insert_statement,kwargs)
+        self.cursor_obj.execute(insert_statement,kwargs)
         # if(resultset):
-            # logger.info('Inserted Successfully')
+        #     logger.info('Inserted Successfully')
         self.conn_obj.commit()
 
     def read(self,*selectvalues,**kwargs):
         sv=['*'] if selectvalues is () else selectvalues
-        print(sv)
-        read_statement='SELECT '+', '.join(sv)+' FROM User '
+        read_statement='SELECT '+', '.join(sv)+' FROM User'
         selectives=[]
         for field, value in kwargs.items():
             selectives.append(str(str(field)+' = "'+str(value)+'"'))
         if selectives:
-            read_statement+='WHERE '+' AND '.join(selectives)
-        resultset = self.cursor_obj.execute(read_statement)
+            read_statement+=' WHERE '+' AND '.join(selectives)
+        resultset = self.cursor_obj.execute(read_statement).fetchall()
         return resultset
         
     def update(self,email_criteria, **uservalues):
