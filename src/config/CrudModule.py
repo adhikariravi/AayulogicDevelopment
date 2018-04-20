@@ -4,7 +4,8 @@
 
 import sqlite3
 from sqlite3 import Error
-# import logging
+
+from Connection import DatabaseConnection
 
 '''
     Author: Ravi Adhikari
@@ -19,18 +20,6 @@ from sqlite3 import Error
                     |-update() # Update fields based on matching criteria | email
                     |-delete() # Delete row value based on matching criteria | email
 '''
-# logger = logging.getLogger()
-# logger.setLevel(logging.DEBUG)
-# log_file_handler = logging.FileHandler('test.log')
-# console_handler = logging.StreamHandler()
-# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# log_file_handler.setLevel(logging.DEBUG)
-# log_file_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-# console_handler.setFormatter(formatter)
-# console_handler.setLevel(logging.ERROR)
-# logger.addHandler(log_file_handler)
-# logger.addHandler(console_handler)
-
 #
 ## Convert the methods to accept and modify a dynamic model
 #
@@ -61,13 +50,10 @@ class UserCrud:
     def insert(self,**kwargs):
         for field in self.user_values:
             kwargs[field]=kwargs.get(field,'')
-        # logger.info(kwargs)
         insert_statement="""
         INSERT INTO User (name, phone,email, bio, dob, gender, address, lat, long, image, hyperlink) 
         VALUES(:name, :phone, :email, :bio, :dob, :gender, :address, :lat, :long, :image, :hyperlink)"""
         self.cursor_obj.execute(insert_statement,kwargs)
-        # if(resultset):
-        #     logger.info('Inserted Successfully')
         self.conn_obj.commit()
 
     def read(self,*selectvalues,**kwargs):
