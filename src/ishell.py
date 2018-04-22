@@ -4,7 +4,7 @@
 from os import system as sys_cmd
 from config.CrudModule import UserCrud
 
-class Interactive_Shell:
+class InteractiveShell:
     def __init__(self):
         self.user_object = UserCrud()
 
@@ -103,7 +103,7 @@ class Interactive_Shell:
         return user_values
 
 def main():
-    ish=Interactive_Shell()
+    ish=InteractiveShell()
     ish.infinite_loop()
 
 
