@@ -28,14 +28,18 @@ class UserCrud:
                  'address', 'lat', 'long', 'image', 'hyperlink']
     
     def __init__(self):
-        # dbObject = DatabaseConnection('SQLITE')
-        dbObject=DatabaseConnection('POSTGRES')
+        # self.dbEngine='SQLITE' 
+        self.dbEngine='POSTGRES'
+        dbObject = DatabaseConnection(self.dbEngine)
         self.conn_obj = dbObject.connection
         self.cursor_obj = dbObject.cursor
+        self.insert_statement='INSERT INTO Userinfo ('+','.join(self.user_values)+') VALUES ('
 
     def create(self):
         # id INTEGER PRIMARY KEY,
-        create_statement="""CREATE TABLE IF NOT EXISTS Userinfo(
+        auto_inc_field='id INTEGER PRIMARY KEY,' if self.dbEngine =='SQLITE'\
+         else 'id SERIAL PRIMARY KEY,' if self.dbEngine=='POSTGRES' else 'id INT PRIMARY KEY,'
+        create_statement="CREATE TABLE IF NOT EXISTS Userinfo("+auto_inc_field+"""
                             name VARCHAR(50) NOT NULL,
                             phone VARCHAR(50) ,
                             email VARCHAR(100),
@@ -53,21 +57,41 @@ class UserCrud:
     def insert(self,**kwargs):
         for field in self.user_values:
             kwargs[field]=kwargs.get(field,'')
-        insert_statement="""
-        INSERT INTO Userinfo (name, phone,email, bio, dob, gender, address, lat, long, image, hyperlink) 
-        VALUES(:name, :phone, :email, :bio, :dob, :gender, :address, :lat, :long, :image, :hyperlink)"""
+        insert_statement=self.insert_statement
+        insert_statement+=' :name, :phone, :email, :bio, :dob, :gender, :address, :lat, :long, :image, :hyperlink)'
         self.cursor_obj.execute(insert_statement,kwargs)
         self.conn_obj.commit()
     
+    def multi_insert_query(self,list_values):
+        multi_insert_stmt=self.insert_statement
+        additives=list()
+        for row in list_values:
+            tuple_ = list()
+            for field in row.values():
+                tuple_.append(self.quote(field))
+            additives.append(','.join(tuple_))
+        self.cursor_obj.execute(multi_insert_stmt+'),('.join(additives)+')')
+        self.conn_obj.commit()
+
+    def insert_query(self,**kwargs):
+        values=list()
+        for field in self.user_values:
+            values.append(self.quote(kwargs[field]))
+        insert_statement=self.insert_statement+','.join(values)+')'
+        print(insert_statement)
+        self.cursor_obj.execute(insert_statement)
+        self.conn_obj.commit()
+
     @staticmethod
     def quote(field):
         return "'"+field+"'" if type(field) is str else str(field)
 
-    def pg_insert(self,values,counter):
+    def pg_insert(self,values,counter=100):
         #
         ## Skipping Field values to directly supply id
+        ## Counter -> Commits to database every 100th record
         #
-        ins='INSERT INTO Userinfo(name, phone,email, bio, dob, gender, address, lat, long, image, hyperlink) values ('
+        ins=self.insert_statement
         insertees=list()
         for each_value in values:
             insertees.append(self.quote(each_value))
@@ -76,8 +100,6 @@ class UserCrud:
         if(int(counter%100)==0):
             self.conn_obj.commit()
         
-
-
     # @staticmethod
     # def get_kwargs(**kwargs):
     #     for field in self.user_values:
@@ -89,9 +111,8 @@ class UserCrud:
         ## Considering the batch insert is automated using a module
         ## We will not check if all the values in kwargs are set.
         #
-        multi_insert_stmt="""
-        INSERT INTO Userinfo (name, phone,email, bio, dob, gender, address, lat, long, image, hyperlink) 
-        VALUES(:name, :phone, :email, :bio, :dob, :gender, :address, :lat, :long, :image, :hyperlink)"""
+        multi_insert_stmt='INSERT INTO Userinfo ('+','.join(self.user_values)+' ) VALUES (' 
+        multi_insert_stmt+=':name, :phone, :email, :bio, :dob, :gender, :address, :lat, :long, :image, :hyperlink)'
         self.cursor_obj.executemany(multi_insert_stmt,dictionary_list)
         self.conn_obj.commit()
 
@@ -101,7 +122,7 @@ class UserCrud:
         read_statement='SELECT '+', '.join(sv)+' FROM Userinfo'
         selectives=[]
         for field, value in kwargs.items():
-            selectives.append(str(str(field)+" = '"+str(value)+"'"))
+            selectives.append(str(field)+" = '"+str(value)+"'")
         if selectives:
             read_statement+=' WHERE '+' AND '.join(selectives)
         self.cursor_obj.execute(read_statement)
@@ -112,9 +133,32 @@ class UserCrud:
         updates=[]
         for keys,values in uservalues.items():
             updates.append(' '+keys+' = "'+values+'"')
-        update_stmt+=','.join(updates)+f' WHERE email="{email_criteria}"'
+        update_stmt+=','.join(updates)+f" WHERE email='{email_criteria}'"
         self.cursor_obj.execute(update_stmt)
 
     def delete(self,email_criteria):
-        delete_statement='DELETE FROM Userinfo WHERE email="'+email_criteria+'"'
+        delete_statement="DELETE FROM Userinfo WHERE email='"+email_criteria+"'"
         self.cursor_obj.execute(delete_statement)
+    
+class CrudModuleModelized:
+    #
+    ## Create a new file Models.py to store the models and their definitions
+    ## __ALPHA__
+    #
+
+    class UserInfo:
+        #
+        ## Define Field name and set its value to desired property
+        #
+
+        NAME='VARCHAR(100)'
+        PHONE='VARCHAR(50)'
+        EMAIL='VARCHAR(50)'
+        BIO='TEXT'
+        DOB='DATE'
+        GENDER='CHAR(1)'
+        ADDRESS='VARCHAR(200)'
+        LAT='VARCHAR(30)'
+        LONG='VARCHAR(30)'
+        IMAGE='VARCHAR(100)' # CHANGE IT TO BLOB
+        HYPERLINK='VARCHAR(500)'
