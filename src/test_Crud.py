@@ -1,9 +1,9 @@
 #
-## Module to Test the functionality of User_CRUD class
+## Module to Test the functionality of UserCrud class
 #
 
-from config.CrudModule import User_CRUD
-crudObj = User_CRUD()
+from config.CrudModule import UserCrud
+crudObj = UserCrud()
 
 uservalues={
 	'name':'ravi',
@@ -18,12 +18,11 @@ uservalues={
 	'image': 'fghjk',
 	'hyperlink':'http://facebook.com/ravi.adhikary'
 }
-# crudObj.cursor_obj.execute('DROP TABLE User')
+# crudObj.cursor_obj.execute('DROP TABLE Userinfo')
 # ex=crudObj.create()
 # for _ in range(10):
     # ex =crudObj.insert(**uservalues)
 result=crudObj.read(*['id','name','email'],**{'id':1,'name':'ravi'})
-print(result.fetchall())
 # crudObj.update('ravi.adhikary@aayulogic.com',**{'name': 'Ravi','email':'raviadhiakry1996@gmail.com'})
 # crudObj.delete('ravi.adhikari@aayulogic.com')
 crudObj.conn_obj.commit()

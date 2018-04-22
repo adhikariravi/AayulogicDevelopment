@@ -4,22 +4,34 @@
 #
 
 import re
+
 # TODO @asperoph || INTRODUCE BINNING TO COMPARE PERFORMANCE
  
 class Radix_Sort:
     def __init__(self,word_list):
+
+        #
+        ## Manipulate Word List to remove non-word character
+        ## Replaces all special_characters_and_spaces
+        #
         self.word_list=word_list
         self.max_size=max([len(word) for word in word_list])
-        self.buckets=self.get_buckets(27) 
+        self.buckets=self.get_buckets(37) 
+        ## Bucket Size is 26 alphabets + 10 numbers 
         #
         ## Total Buckets Needed = [a-z]+[#]
         # 
         self.buckets_directory=self.assign_numeric_values(
+            self.get_numeric_characters()+
             self.get_alphabet_characters()) 
         #
         ## Simply Add Function to include Numeric character for binning
         #
         self.current_index=self.max_size
+
+    @staticmethod
+    def lsd_numeric(sort):
+        pass
 
     def lsd_sort(self):
         # Maintain Length of all words
@@ -30,12 +42,10 @@ class Radix_Sort:
             for word in self.flat_list:
                 self.add_to_bucket(word,index)
             self.flat_list=self.flatten()
-        # TODO @asperoph || Remove Dont Care Character
-        # print(self.flat_list)
         return(self.remove_dont_care_character(self.flat_list))
 
     def flatten(self):
-        temp_list=[]
+        temp_list=list()
         for each_list in self.buckets:
             if not each_list:
                 continue
@@ -78,7 +88,7 @@ class Radix_Sort:
     
     @staticmethod
     def maintain_size(old_word_list,single_case=True):
-        fixlen=[]
+        fixlen=list()
         max_size=max(len(word) for word in old_word_list)
         for word in old_word_list:
             add=['#' for _ in range(max_size-len(word))]
@@ -102,7 +112,7 @@ class Radix_Sort:
         #
         ## Create multiple empty buckets / bins
         #
-        return [[] for _ in range(no_buckets)]
+        return [list() for _ in range(no_buckets)]
     
     @staticmethod
     def assign_numeric_values(char_list,dont_care_character='#'):
@@ -114,3 +124,27 @@ class Radix_Sort:
         assigned_values={character:index+1 for index,character in enumerate(char_list)}
         assigned_values[dont_care_character]=0
         return assigned_values
+
+class SearchMethods:
+
+    @staticmethod
+    def growth_function(current_item, search_item):
+        pass
+
+    @staticmethod
+    def binary_search(unsorted_list,item):
+        sorted_list=Radix_Sort(unsorted_list).lsd_sort()
+        last=len(sorted_list)-1
+        first=0
+        while(first<=last):
+            mid = int((first+last)//2)
+            if(sorted_list[mid]==item):
+                return mid
+            else:
+                if item<sorted_list[mid]:
+                    last=mid-1
+                else:
+                    first=mid+1
+        return False
+
+print(SearchMethods.binary_search(['rajesh','nirmal','ravi','ashish'],'ravi'))
