@@ -2,15 +2,15 @@
 ## Development of Interactive Shell for the User
 #
 from os import system as sys_cmd
-from config.CrudModule import User_CRUD
+from config.CrudModule import UserCrud
 
 class Interactive_Shell:
     def __init__(self):
-        self.user_object = User_CRUD()
+        self.user_object = UserCrud()
 
     def prefetch_email(self):
         ## probable err for no data
-        self.emails=[elem[0] for elem in self.user_object.read(*['email']).fetchall()]
+        self.emails=[elem[0] for elem in self.user_object.read(*['email'])]
 
     def read_result_formatter_paginator(self,*args,**kwargs):
         pass
@@ -21,8 +21,11 @@ class Interactive_Shell:
         input('Enter any key to continue . . .')
 
     def infinite_loop(self):
-        self.__class__.pause('test')
         prompt='root@web# '
+        #
+        ## Creates Table if does not exist
+        #
+        self.user_object.create()
         self.prefetch_email()
         while True:
             self.show_Menu()
@@ -51,25 +54,25 @@ class Interactive_Shell:
                     print('args: ',args)
                     print('kwargs: ',kwargs)
                 resultSet=self.user_object.read(*args,**kwargs)
-                for row in resultSet.fetchall():
+                for row in resultSet:
                     for ind,field in enumerate(row[1:]):
                         print(self.user_object.user_values[ind],'\t\t',field)
-                self.__class__.pause('').__func__()
+                self.pause('')
 
             elif(user_input=='3'):
                 # Update User Info
                 email = input('Enter email of the target row to be changed: ')
-                res=self.user_object.read(*['*'],**{'email':email}).fetchone()
+                res=self.user_object.read(*['*'],**{'email':email})
                 if(email not in self.emails):
-                    print('No Matching email')
+                    self.pause('No Matching email')
                     continue
                 else:
                     print('Old Values\n')
-                    for index,fields in self.user_object.user_values:
-                        print(fields,' : ',res[index])
+                    for index,fields in enumerate(self.user_object.user_values):
+                        print(fields,' : ',res[0][index+1])
                 updating_values=self.get_user_input()
                 self.user_object.update(email,**updating_values)
-                self.__class__.pause('User Details updated')
+                self.pause('User Details updated')
                 self.prefetch_email()
 
             elif(user_input=='4'):
@@ -78,7 +81,7 @@ class Interactive_Shell:
                 #
                 email=input('Enter the email address of the row to be deleted: ')
                 if email not in self.emails:
-                    print('Email Does not Exist ')
+                    self.pause('Email Does not Exist ')
                     continue
                 self.user_object.delete(email)
                 self.__class__.pause('Matching Records Deleted') #TODO: Add no. of Affected Rows
