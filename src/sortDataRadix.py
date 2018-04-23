@@ -2,7 +2,6 @@
 import time
 from re import sub as substitute
 from config.CrudModule import UserCrud
-from Caching import Caches
 from Library import RadixSort
 #
 ## Implement key wise searching on database results
