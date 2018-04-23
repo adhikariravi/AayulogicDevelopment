@@ -8,7 +8,7 @@ from config.CrudModule import UserCrud
 
 # TODO @asperoph || INTRODUCE BINNING TO COMPARE PERFORMANCE
  
-class Radix_Sort:
+class RadixSort:
     def __init__(self,word_list):
 
         #
@@ -145,7 +145,7 @@ class SearchMethods:
 
     @staticmethod
     def binary_search(unsorted_list,item):
-        sorted_list=Radix_Sort(unsorted_list).lsd_sort()
+        sorted_list=RadixSort(unsorted_list).lsd_sort()
         last=len(sorted_list)-1
         first=0
         while(first<=last):

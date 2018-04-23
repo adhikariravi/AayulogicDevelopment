@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 from ishell import InteractiveShell
-from sortDataRadix import Data_Result_Searching
+from sortDataRadix import DataResultSearching
 from config.CrudModule import UserCrud
 from Library import SearchMethods
 #
@@ -13,7 +13,7 @@ class ArgParser:
         self.ish = InteractiveShell()
     
     def read_arguments(self):
-        drs = Data_Result_Searching()
+        drs = DataResultSearching()
         ag_parser = ArgumentParser()
         ag_parser.add_argument('-i','--insert',help='Insert UserInfo Into Database',
         action='store_true')

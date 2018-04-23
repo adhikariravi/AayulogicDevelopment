@@ -3,16 +3,16 @@ import time
 from re import sub as substitute
 from config.CrudModule import UserCrud
 from Caching import Caches
-from Library import Radix_Sort
+from Library import RadixSort
 #
 ## Implement key wise searching on database results
 #
 
-class Data_Result_Searching:
+class DataResultSearching:
     def __init__(self):
         self.userobj = UserCrud()
         self.shelving_dict=dict()
-        # sorting_object=Radix_Sort(sorting_key_list)
+        # sorting_object=RadixSort(sorting_key_list)
     #
     ## We will take all the results from the User table
     ## And get the key to sort from with the `user`
@@ -100,8 +100,8 @@ class Data_Result_Searching:
         
         ### all_keys is email list
         # special_removed_keys = [self.remove_special(email) for email in emails]
-        self.radix_sort_obj = Radix_Sort(self.all_keys)
-        # self.radix_sort_obj = Radix_Sort(all_keys)
+        self.radix_sort_obj = RadixSort(self.all_keys)
+        # self.radix_sort_obj = RadixSort(all_keys)
         start = time.process_time()
         self.sorted_keys = self.radix_sort_obj.lsd_sort()
         end = time.process_time()
