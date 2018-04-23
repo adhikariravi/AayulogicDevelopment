@@ -36,7 +36,6 @@ class UserCrud:
         self.insert_statement='INSERT INTO Userinfo ('+','.join(self.user_values)+') VALUES ('
 
     def create(self):
-        # id INTEGER PRIMARY KEY,
         auto_inc_field='id INTEGER PRIMARY KEY,' if self.dbEngine =='SQLITE'\
          else 'id SERIAL PRIMARY KEY,' if self.dbEngine=='POSTGRES' else 'id INT PRIMARY KEY,'
         create_statement="CREATE TABLE IF NOT EXISTS Userinfo("+auto_inc_field+"""
@@ -78,7 +77,6 @@ class UserCrud:
         for field in self.user_values:
             values.append(self.quote(kwargs[field]))
         insert_statement=self.insert_statement+','.join(values)+')'
-        print(insert_statement)
         self.cursor_obj.execute(insert_statement)
         self.conn_obj.commit()
 
@@ -127,18 +125,27 @@ class UserCrud:
             read_statement+=' WHERE '+' AND '.join(selectives)
         self.cursor_obj.execute(read_statement)
         return self.cursor_obj.fetchall()
-        
+
+    #
+    ## Create email fetcher
+    # 
+
+    def fetch_email(self):
+        email_tuples=self.read(*['email'])
+        return [row[0] for row in email_tuples]
+
     def update(self,email_criteria, **uservalues):
         update_stmt = "UPDATE Userinfo SET"
         updates=[]
         for keys,values in uservalues.items():
-            updates.append(' '+keys+' = "'+values+'"')
+            updates.append(' '+keys+" = '"+values+"'")
         update_stmt+=','.join(updates)+f" WHERE email='{email_criteria}'"
         self.cursor_obj.execute(update_stmt)
 
     def delete(self,email_criteria):
         delete_statement="DELETE FROM Userinfo WHERE email='"+email_criteria+"'"
         self.cursor_obj.execute(delete_statement)
+        self.conn_obj.commit()
     
 class CrudModuleModelized:
     #

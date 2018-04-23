@@ -4,10 +4,11 @@
 #
 
 import re
+from config.CrudModule import UserCrud
 
 # TODO @asperoph || INTRODUCE BINNING TO COMPARE PERFORMANCE
  
-class Radix_Sort:
+class RadixSort:
     def __init__(self,word_list):
 
         #
@@ -17,6 +18,11 @@ class Radix_Sort:
         self.word_list=word_list
         self.max_size=max([len(word) for word in word_list])
         self.buckets=self.get_buckets(37) 
+
+        #
+        ## During sorting, a new problem was detected. i.e 
+        ## names can contain uppercase as well as lowercase characters.
+        ## 
         ## Bucket Size is 26 alphabets + 10 numbers 
         #
         ## Total Buckets Needed = [a-z]+[#]
@@ -70,7 +76,10 @@ class Radix_Sort:
         ## Return invalid number so we know invalid character has been judged
         ## Not Handled || Breaks Code
         #
-        return self.buckets_directory.get(character,-9999)
+        index=self.buckets_directory.get(character,-9999)
+        if(index==-9999):
+            print(f'Invalid Index for {character}')
+        return index
 
     @staticmethod
     def get_alphabet_characters():
@@ -88,12 +97,15 @@ class Radix_Sort:
     
     @staticmethod
     def maintain_size(old_word_list,single_case=True):
+
+        ## Add functionality to accept both cases. Ignored due to high no. of buckets
+
         fixlen=list()
         max_size=max(len(word) for word in old_word_list)
         for word in old_word_list:
             add=['#' for _ in range(max_size-len(word))]
             word+=''.join(add)
-            fixlen.append(word.lower() if single_case else word)
+            fixlen.append(word)
         return fixlen
 
     @staticmethod
@@ -133,7 +145,7 @@ class SearchMethods:
 
     @staticmethod
     def binary_search(unsorted_list,item):
-        sorted_list=Radix_Sort(unsorted_list).lsd_sort()
+        sorted_list=RadixSort(unsorted_list).lsd_sort()
         last=len(sorted_list)-1
         first=0
         while(first<=last):
@@ -146,5 +158,3 @@ class SearchMethods:
                 else:
                     first=mid+1
         return False
-
-print(SearchMethods.binary_search(['rajesh','nirmal','ravi','ashish'],'ravi'))
