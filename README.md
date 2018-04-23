@@ -4,6 +4,7 @@
 
 The program was developed using python v3.6.3
 Please refer to the python version with `root@system ~# python --version`
+
 The program allows the manipulation of data in Userinfo table. The table contains the following structure:
 
 |id| name| phone| email| bio| dob| gender| address| lat| long| image| hyperlink| 
@@ -40,6 +41,7 @@ root@web# 1
 ```
 
 ### Arguments
+
 Argument Shell has following parameters:
 
 ```
@@ -57,12 +59,15 @@ Argument Shell has following parameters:
  root@system ~# python3 argshell.py --search someone@somewhere.com
  root@system ~# python3 argshell.py --sort	 email|name
  ```
+
  ### Batch Insert
+
  Batch Insert the desired number of fake data into the database.
 
- ```bash
+ ```
  root@system ~# python3 BatchInsert.py 50000 
  ```
+
  ### Dependencies
 
  The program relies on two external libraries:
@@ -72,16 +77,17 @@ Argument Shell has following parameters:
  ```
  Install the dependencies with:
 
- ```bash
+ ```
  root@system ~# pip3 install psycopg2-binary faker
  ```
   
  ## Configuration
+
  The following file needs to be modified for establising the database connection:
  
  ./config/Config.py
  
- ```python3
+```
  class PsqlConnectionParameters:
     USERNAME='postgres'
     PASSWORD='postgres'
@@ -91,11 +97,9 @@ Argument Shell has following parameters:
 
 class SqliteConnectionParameters:
     DATABASE='config/web.db'
- 
- ```
- 
- Modify the selection of database from file ./config/CrudModule.py inside __init__ method in CrudModule class.
- ```python3
+``` 
+Modify the selection of database from file ./config/CrudModule.py inside __init__ method in CrudModule class.
+```
 #self.dbEngine='SQLITE' 
 self.dbEngine='POSTGRES'
 ```
