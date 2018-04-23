@@ -2,6 +2,8 @@
 
 ### Description of the Program
 
+The program was developed using python v3.6.3
+Please refer to the python version with `root@system ~# python --version`
 The program allows the manipulation of data in Userinfo table. The table contains the following structure:
 
 |id| name| phone| email| bio| dob| gender| address| lat| long| image| hyperlink| 
@@ -56,8 +58,8 @@ Argument Shell has following parameters:
  root@system ~# python3 argshell.py --sort	 email|name
  ```
  ### Batch Insert
-
  Batch Insert the desired number of fake data into the database.
+
  ```bash
  root@system ~# python3 BatchInsert.py 50000 
  ```
@@ -65,17 +67,16 @@ Argument Shell has following parameters:
 
  The program relies on two external libraries:
  ```
- |- python3
  |- psycopg2
  |- faker
  ```
  Install the dependencies with:
+
  ```bash
  root@system ~# pip3 install psycopg2-binary faker
  ```
   
  ## Configuration
- 
  The following file needs to be modified for establising the database connection:
  
  ./config/Config.py
