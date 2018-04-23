@@ -60,7 +60,7 @@ Argument Shell has following parameters:
  root@system ~# python3 argshell.py --sort	 email|name
  ```
 
- ### Batch Insert
+### Batch Insert
 
  Batch Insert the desired number of fake data into the database.
 
@@ -68,7 +68,7 @@ Argument Shell has following parameters:
  root@system ~# python3 BatchInsert.py 50000 
  ```
 
- ### Dependencies
+### Dependencies
 
  The program relies on two external libraries:
  ```
@@ -81,7 +81,7 @@ Argument Shell has following parameters:
  root@system ~# pip3 install psycopg2-binary faker
  ```
   
- ## Configuration
+## Configuration
 
  The following file needs to be modified for establising the database connection:
  
@@ -98,31 +98,32 @@ Argument Shell has following parameters:
 class SqliteConnectionParameters:
     DATABASE='config/web.db'
 ``` 
-Modify the selection of database from file ./config/CrudModule.py inside __init__ method in CrudModule class.
+Modify the selection of database from file ./src/config/CrudModule.py inside __init__ method in CrudModule class.
 ```
 #self.dbEngine='SQLITE' 
 self.dbEngine='POSTGRES'
 ```
 
 
- ## Folder Structure
+## Folder Structure
 
 ```
-|-README.md                     # This README file
-|-sortDataRadix.py              # Helper function to read and sort data retrieved from the database
-|-argshell.py                   # Interaction Module 1
-|-test_Crud.py                  # Helper program to test the connectivity of CrudModule
-|-test_Connectivity.py	        # Helper program to test the connectivity of Database.
-|-config                        # The files containing database connection modules
-|_______-load_json_data.py      # The file that loads json data into sqlite.
-|_______-Config.py              # The file that defines database connectivity parameters
-|_______-Connection.py          # The database interaction Module
-|_______-row200.json            # json dump of 200 rows of data. Used for inserting with load_json_data.py file
-|_______-web.db                 # sqlite database
-|_______-CrudModule.py          # Module that reacts to Database and User Interface commands.
-|_______-test.log               # Log file (currently unused)
-|-BatchInsert.py                # Insert fake data into database
-|-Caching.py                    # Caching mechanism for fast retrieval (to be used after Threading). Unused.
-|-ishell.py                     # Interaction Module 2
-|-Library.py                    # Module that facilitates Radix Sort and Binary Search
+|-README.md                          # This README file
+|-src                                # Root Directory of the project
+|_____-sortDataRadix.py              # Helper function to read and sort data retrieved from the |_____atabase
+|_____-argshell.py                   # Interaction Module 1
+|_____-test_Crud.py                  # Helper program to test the connectivity of CrudModule
+|_____-test_Connectivity.py	         # Helper program to test the connectivity of Database.
+|_____-config                        # The files containing database connection modules
+|____________-load_json_data.py      # The file that loads json data into sqlite.
+|____________-Config.py              # The file that defines database connectivity parameters
+|____________-Connection.py          # The database interaction Module
+|____________-row200.json            # json dump of 200 rows of data. Used for inserting with |_____oad_json_data.py file
+|____________-web.db                 # sqlite database
+|____________-CrudModule.py          # Module that reacts to Database and User Interface commands.
+|____________-test.log               # Log file (currently unused)
+|_____-BatchInsert.py                # Insert fake data into database
+|_____-Caching.py                    # Caching mechanism for fast retrieval (to be used after |_____hreading). Unused.
+|_____-ishell.py                     # Interaction Module 2
+|_____-Library.py                    # Module that facilitates Radix Sort and Binary Search
 ```
